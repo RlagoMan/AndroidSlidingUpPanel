@@ -961,6 +961,12 @@ public class SlidingUpPanelLayout extends ViewGroup {
             if (!isViewUnder(mScrollableView, (int) mInitialMotionX, (int) mInitialMotionY)) {
                 return super.dispatchTouchEvent(ev);
             }
+            
+            // Prevent the slidingUpPanel to block events when is hidden or collapsed.
+            // This causes errors on scrollable views under main content.
+            if(PanelState.COLLAPSED.equals(getPanelState()) || PanelState.HIDDEN.equals(getPanelState())) {
+                return super.dispatchTouchEvent(ev);
+            }
 
             // Which direction (up or down) is the drag moving?
             if (dy * (mIsSlidingUp ? 1 : -1) > 0) { // Collapsing
